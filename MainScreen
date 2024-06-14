@@ -1,0 +1,55 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MainScreen extends JFrame {
+    public MainScreen() {
+        setTitle("Main Screen");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 1));
+
+        JButton productManagementButton = new JButton("Product Management");
+        productManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ProductManagement().setVisible(true);
+            }
+        });
+
+        JButton supplierManagementButton = new JButton("Supplier Management");
+        supplierManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SupplierManagement().setVisible(true);
+            }
+        });
+
+        JButton orderManagementButton = new JButton("Order Management");
+        orderManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new OrderManagement().setVisible(true);
+            }
+        });
+
+        panel.add(productManagementButton);
+        panel.add(supplierManagementButton);
+        panel.add(orderManagementButton);
+
+        add(panel);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainScreen().setVisible(true);
+            }
+        });
+    }
+}
