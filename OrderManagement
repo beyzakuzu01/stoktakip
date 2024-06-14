@@ -1,0 +1,84 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+
+public class OrderManagement extends JFrame {
+    private JTextField productIdField, quantityField;
+    private JSpinner dateSpinner;
+
+    public OrderManagement() {
+        setTitle("Order Management");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 2));
+
+        JLabel productIdLabel = new JLabel("Product ID:");
+        productIdField = new JTextField();
+        JLabel quantityLabel = new JLabel("Quantity:");
+        quantityField = new JTextField();
+        JLabel dateLabel = new JLabel("Date:");
+        dateSpinner = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
+        dateSpinner.setEditor(dateEditor);
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int productId = Integer.parseInt(productIdField.getText().trim());
+                    int quantity = Integer.parseInt(quantityField.getText().trim());
+                    Date date = (Date) dateSpinner.getValue();
+
+                    if (productId <= 0 || quantity <= 0) {
+                        throw new IllegalArgumentException("Product ID and quantity must be positive.");
+                    }
+
+                    Order order = new Order();
+                    order.setProductId(productId);
+                    order.setQuantity(quantity);
+                    order.setDate(date);
+
+                    // Use OrderOperations class to add the order and retrieve the auto-generated id from the database
+                    OrderOperations operations = new OrderOperations();
+                    int addedOrderId = operations.addOrder(order);
+                    if (addedOrderId != -1) {
+                        order.setId(addedOrderId); // Assign the id obtained from the database to the Order object
+                        JOptionPane.showMessageDialog(null, "Order successfully added. Order ID: " + addedOrderId);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Failed to add order");
+                    }
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid Product ID and quantity.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                } catch (IllegalArgumentException iae) {
+                    JOptionPane.showMessageDialog(null, iae.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        panel.add(productIdLabel);
+        panel.add(productIdField);
+        panel.add(quantityLabel);
+        panel.add(quantityField);
+        panel.add(dateLabel);
+        panel.add(dateSpinner);
+        panel.add(addButton);
+
+        add(panel);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            OrderManagement frame = new OrderManagement();
+            frame.setVisible(true);
+        });
+    }
+}
