@@ -1,0 +1,19 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class SupplierOperations {
+    public boolean addSupplier(Supplier supplier) {
+        try (Connection conn = DatabaseConnection.connect()) {
+            String sql = "INSERT INTO Supplier (name, contact) VALUES (?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, supplier.getName());
+            pstmt.setString(2, supplier.getContact());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}
