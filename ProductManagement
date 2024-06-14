@@ -1,0 +1,82 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+
+public class ProductManagement extends JFrame {
+    private JTextField productIdField, nameField, categoryField, stockQuantityField, unitPriceField;
+
+    public ProductManagement() {
+        setTitle("Product Management");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2));
+
+        JLabel productIdLabel = new JLabel("Product ID:");
+        productIdField = new JTextField();
+        JLabel nameLabel = new JLabel("Name:");
+        nameField = new JTextField();
+        JLabel categoryLabel = new JLabel("Category:");
+        categoryField = new JTextField();
+        JLabel stockQuantityLabel = new JLabel("Stock Quantity:");
+        stockQuantityField = new JTextField();
+        JLabel unitPriceLabel = new JLabel("Unit Price:");
+        unitPriceField = new JTextField();
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int productId = Integer.parseInt(productIdField.getText());
+                    String name = nameField.getText();
+                    String category = categoryField.getText();
+                    int stockQuantity = Integer.parseInt(stockQuantityField.getText());
+                    BigDecimal unitPrice = new BigDecimal(unitPriceField.getText());
+
+                    Product product = new Product();
+                    product.setProductId(productId);
+                    product.setName(name);
+                    product.setCategory(category);
+                    product.setStockQuantity(stockQuantity);
+                    product.setUnitPrice(unitPrice);
+
+                    ProductOperations operations = new ProductOperations();
+                    if (operations.addProduct(product)) {
+                        JOptionPane.showMessageDialog(null, "Product added successfully");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Failed to add product");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid values");
+                }
+            }
+        });
+
+        panel.add(productIdLabel);
+        panel.add(productIdField);
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(categoryLabel);
+        panel.add(categoryField);
+        panel.add(stockQuantityLabel);
+        panel.add(stockQuantityField);
+        panel.add(unitPriceLabel);
+        panel.add(unitPriceField);
+        panel.add(new JLabel()); // Empty label for alignment
+        panel.add(addButton);
+
+        add(panel);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            ProductManagement frame = new ProductManagement();
+            frame.setVisible(true);
+        });
+    }
+}
